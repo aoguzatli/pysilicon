@@ -1,0 +1,4 @@
+{PKPK,MAX,MIN,AMPL,TOP,BASE,CMEAN,MEAN,RMS,CRMS,OVSN,FPRE,OVSP,RPRE,PER,FREQ,PWID,NWID,RISE,FALL,WID,DUTY,NDUTY,ALL}
+
+PKPK vertical peak-to-peak MAXmaximum vertical valu eMINminimum vertical value 
+AMPLvertical amplitudeTOPwaveform top valueBASE waveform base valueCMEANaverage value in the first cycleMEANaverage valueRMSRMS valueCRMSRMS value in the first cycleOVSNovershoot of a falling edge FPRE preshoot of a falling edge
