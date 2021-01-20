@@ -1,7 +1,7 @@
 import random, copy, math, collections
 
 def rm_header(b):
-    if b.startswith("b'"):
+    if b.startswith("0b"):
         return b[2:]
     else:
         return b
@@ -59,7 +59,7 @@ def as_bin(n, width = None):
     return out
 
 def is_bin(n):
-    return isinstance(in, str) and all([bit in ['0', '1'] for bit in n]):
+    return isinstance(n, str) and all([bit in ['0', '1'] for bit in n])
 
 def as_int(b, invalid = -9999):
     if b.startswith("b'"):

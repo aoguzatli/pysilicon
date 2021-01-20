@@ -9,7 +9,6 @@ if Config.running_cocotb:
     from cocotb.binary import BinaryValue
     from cocotb.clock import Clock
     from cocotb.triggers import FallingEdge, RisingEdge
-    from cocotb_essentials import *
 
 def read_signal(obj):
     if Config.running_cocotb:
@@ -26,8 +25,8 @@ def write_signal(obj, val):
 def cycle(clock, T = Config.T_default, clk_running = False):
     if Config.running_cocotb:
         if clk_running:
-            yield RisingEdge(scan_clk)
-            yield FallingEdge(scan_clk)
+            yield RisingEdge(clock)
+            yield FallingEdge(clock)
         else:
             halfT = int(T/2)
             yield Timer(halfT)
@@ -69,6 +68,6 @@ if Config.running_pynq:
             time.sleep(0.001)
 
 if Config.running_cocotb:
-    cocotb.coroutine(cycle)
-    cocotb.coroutine(cycles)
-    cocotb.coroutine(wait_for_val)
+    cycle = cocotb.coroutine(cycle)
+    cycles = cocotb.coroutine(cycles)
+    wait_for_val = cocotb.coroutine(wait_for_val)

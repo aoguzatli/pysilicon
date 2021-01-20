@@ -233,7 +233,6 @@ class JTAG:
             confs[self.confouts.index(key)] = value
 
         val = ''.join(confs[::-1]) + self.current_chain_bits
-
         assert(len(val) == self.width)
 
         if Config.running_cocotb:
