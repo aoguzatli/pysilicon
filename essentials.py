@@ -1,6 +1,6 @@
 from config import Config
 import random, copy, math, time
-from binary import *
+from .binary import *
 
 if Config.running_cocotb:
     import cocotb

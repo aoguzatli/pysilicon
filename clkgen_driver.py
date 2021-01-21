@@ -1,8 +1,8 @@
 import random, copy, math
-from binary import *
-from scan_driver import Scanner
-from config import Config
-from essentials import *
+from .binary import *
+from .scan_driver import Scanner
+from .config import Config
+from .essentials import *
 
 if Config.running_cocotb:
     import cocotb

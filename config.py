@@ -16,5 +16,3 @@ class Config:
         default_decorator = cocotb.coroutine
     else:
         default_decorator = aslist
-
-    
