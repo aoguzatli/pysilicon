@@ -68,6 +68,6 @@ if Config.running_pynq:
             time.sleep(0.001)
 
 if Config.running_cocotb:
-    cycle = cocotb.coroutine(cycle)
-    cycles = cocotb.coroutine(cycles)
-    wait_for_val = cocotb.coroutine(wait_for_val)
+    cycle = Config.default_decorator(cycle)
+    cycles = Config.default_decorator(cycles)
+    wait_for_val = Config.default_decorator(wait_for_val)

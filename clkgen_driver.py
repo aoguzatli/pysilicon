@@ -54,6 +54,5 @@ class Clkgen:
             out = self.chain.scan_out(bits)
         assert out == bits, out
 
-    if Config.running_cocotb:
-        cocotb.coroutine(set_fast_clk)
-        cocotb.coroutine(set_slow_clk)
+    set_fast_clk = Config.default_decorator(set_fast_clk)
+    set_slow_clk = Config.default_decorator(set_slow_clk)

@@ -16,7 +16,7 @@ class Scanner:
 
     def __init__(self, T = Config.T_default, interface = None, scan_clk = None, scan_in = None, scan_out = None,
         scan_en = None, scan_wen = None, fromMSB = False, verbosity = 0, clk_running = False,
-        clk_b = False, length = None):
+        clk_b = False, length = None, read_func = read_signal):
 
         if interface is None:
             self._scan_in = scan_in
@@ -37,13 +37,14 @@ class Scanner:
         self.clk_running = clk_running
         self.clk_b = clk_b
         self.length = length
+        self.read_func = read_func
 
         self.halfT = int(T/2)
         self.quarterT = int(T/4)
 
     def scan_in(self, val, T = None, scan_clk = None, scan_in = None, scan_out = None,
         scan_en = None, scan_wen = None, fromMSB = None, verbosity = None, clk_running = None,
-        clk_b = None):
+        clk_b = None, read_func = None):
 
         if T is None:
             T = self.T
@@ -71,6 +72,8 @@ class Scanner:
             clk_running = self.clk_running
         if clk_b is None:
             clk_b = self.clk_b
+        if read_func is None:
+            read_func = self.read_func
 
         if self.length is not None and len(val) != self.length:
             print(f'Warning: number of scanned bits ({len(val)}) is not equal to the scan chain length ({self.length})')
@@ -87,21 +90,18 @@ class Scanner:
             else:
                 yield Timer(halfT)
 
-        outstr = ''
-        if scan_en is not None:
-            if read_signal(scan_en) == '1':
-                print('ERROR: scan enable is high, another chain might be using the scan ports')
-                return None
-            else:
-                write_signal(scan_en, 1)
-
         if Config.running_cocotb:
-            if not clk_running:
-                yield Timer(halfT)
+            if scan_en is not None:
+                if read_func(scan_en) == '1':
+                    print('ERROR: scan enable is high, another chain might be using the scan ports')
+                    return None
+                else:
+                    write_signal(scan_en, 1)
 
+        outstr = ''
         for i, v in enumerate(val):
             if scan_out is not None:
-                outstr = outstr + read_signal(scan_out)
+                outstr = outstr + read_func(scan_out)
 
             if (verbosity == 1 and i%100 == 0) or (verbosity == 2 and i%10 == 0) or (verbosity > 2):
                 print(f"Scanning bit {i} out of {len(val)-1}...")
@@ -151,15 +151,15 @@ class Scanner:
         return out
 
     if Config.running_cocotb:
-        scan_in = cocotb.coroutine(scan_in)
-        scan_out = cocotb.coroutine(scan_out)
+        scan_in = Config.default_decorator(scan_in)
+        scan_out = Config.default_decorator(scan_out)
 
 
 class JTAG:
 
     def __init__(self, chains, confouts, interface = None, T = Config.T_default, jtag_clk = None, jtag_in = None,
                 jtag_out = None, jtag_en = None, jtag_load = None, scan_clk = None, scan_in = None, scan_out = None,
-                scan_en = None, fromMSB = False):
+                scan_en = None, fromMSB = False, read_func = read_signal):
 
         if hasattr(chains, '__iter__'):
             self.chains = chains
@@ -170,6 +170,7 @@ class JTAG:
 
         self.confouts = confouts
         self.num_confouts = len(confouts)
+        self.read_func = read_func
 
         if interface is None:
             self._jtag_in = jtag_in
@@ -203,7 +204,7 @@ class JTAG:
 
         self.jtag_scan_chain = Scanner(T = T, scan_clk = jtag_clk, scan_in = jtag_in, scan_out = jtag_out,
             scan_en = jtag_en, scan_wen = jtag_load, fromMSB = fromMSB, verbosity = 0, clk_running = False,
-            clk_b = False, length = self.width)
+            clk_b = False, length = self.width, read_func = self.read_func)
 
     def set_chain(self, chain):
         if isinstance(chain, Scanner):
@@ -250,9 +251,9 @@ class JTAG:
             clk = self._scan_clk
 
         if Config.running_cocotb:
-            out = yield self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
+            out = yield self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
         else:
-            out = self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
+            out = self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
 
         return out
 
@@ -329,14 +330,13 @@ class JTAG:
                 else:
                     print(f'Scan chain {i}: pass')
 
-    if Config.running_cocotb:
-        set_confouts = cocotb.coroutine(set_confouts)
-        set_chain = cocotb.coroutine(set_chain)
-        scan_in = cocotb.coroutine(scan_in)
-        scan_out = cocotb.coroutine(scan_out)
-        select_and_scan_in = cocotb.coroutine(select_and_scan_in)
-        select_and_scan_out = cocotb.coroutine(select_and_scan_out)
-        self_test = cocotb.coroutine(self_test)
+    set_confouts = Config.default_decorator(set_confouts)
+    set_chain = Config.default_decorator(set_chain)
+    scan_in = Config.default_decorator(scan_in)
+    scan_out = Config.default_decorator(scan_out)
+    select_and_scan_in = Config.default_decorator(select_and_scan_in)
+    select_and_scan_out = Config.default_decorator(select_and_scan_out)
+    self_test = Config.default_decorator(self_test)
 
 
 if Config.running_pynq:
