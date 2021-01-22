@@ -45,9 +45,9 @@ def cycles(clock, n, T = Config.T_default, clk_running = False):
         for i in range(n):
             cycle(clock, T, clk_running)
 
-def wait_for_val(signal, val, clock, clk_running = True, T = Config.T_default, timeout = 5000):
+def wait_for_val(signal, val, clock, clk_running = True, T = Config.T_default, timeout = 5000, read_func = read_signal):
     for i in range(timeout):
-        if(read_signal(signal) == val):
+        if(read_func(signal) == val):
             return
         else:
             if Config.running_cocotb:
