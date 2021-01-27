@@ -9,9 +9,9 @@ if Config.running_cocotb:
 
 class Clkgen:
 
-    def __init__(self, interface):
+    def __init__(self, chain):
         self.interface = interface
-        self.chain = Scanner(interface = interface)
+        self.chain = chain
 
     def set_fast_clk(division = 7, oscillator = 1, block = None):
         if block is None:
