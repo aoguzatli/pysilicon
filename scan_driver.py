@@ -150,9 +150,8 @@ class Scanner:
 
         return out
 
-    if Config.running_cocotb:
-        scan_in = Config.default_decorator(scan_in)
-        scan_out = Config.default_decorator(scan_out)
+    scan_in = Config.default_decorator(scan_in)
+    scan_out = Config.default_decorator(scan_out)
 
 
 class JTAG:
