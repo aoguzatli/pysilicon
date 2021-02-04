@@ -87,8 +87,8 @@ def inv(n):
     for bit in n:
         if bit == '1':
             out = out + '0'
-        elif bit == '1':
-            out = out + '0'
+        elif bit == '0':
+            out = out + '1'
         else:
             print('inv: Not a binary string!')
     return out
