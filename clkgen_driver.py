@@ -7,6 +7,25 @@ from .essentials import *
 if Config.running_cocotb:
     import cocotb
 
+efpga_reset
+efpga_jtag_clk
+efpga_jtag_load
+efpga_jtag_in
+efpga_jtag_out
+
+efpga_scan_clk
+efpga_scan_en
+efpga_scan_in
+efpga_scan_out
+
+conf_sel[1:0]
+
+conf_out[3:0]
+
+gnd:
+conf_sel[3:2]
+
+
 class Clkgen:
 
     def __init__(self, chain):
