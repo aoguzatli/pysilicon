@@ -1,4 +1,4 @@
-from config import Config
+from .config import Config
 import random, copy, math, time
 from .binary import *
 from .essentials import *
