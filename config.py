@@ -8,7 +8,10 @@ class Config:
     def aslist(generator):
         "Function decorator to transform a generator into a list"
         def wrapper(*args, **kwargs):
-            return list(generator(*args, **kwargs))
+            try:
+                next(generator(*args, **kwargs))
+            except StopIteration as ex:
+                return ex.value
         return wrapper
 
     if running_cocotb:
