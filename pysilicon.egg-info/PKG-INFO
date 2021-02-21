@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: pysilicon
+Version: 0.0.2
+Summary: A package with useful Python scripts for IC design and verification
+Home-page: https://github.com/aoguzatli/pysilicon
+Author: Oguz Atli
+Author-email: aoguzatli@gmail.com
+License: UNKNOWN
+Description: # testing
+        
+        A Python library that includes useful utilities for Verilog simulation using Cocotb and chip testing using Pynq.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
