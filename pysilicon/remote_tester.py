@@ -3,10 +3,10 @@ import time
 
 class RemoteTester:
 
-    def __init__():
+    def __init__(password):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.ssh.connect("mp_ubuntu.andrew.cmu.edu", username="mpubuntu", password="KM_labRH321", port="22")
+        self.ssh.connect("mp_ubuntu.andrew.cmu.edu", username="mpubuntu", password=password, port="22")
         time.sleep(5)
 
     def exec_ssh(self, cmd, ret = False):

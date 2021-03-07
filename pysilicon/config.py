@@ -1,5 +1,7 @@
+import os
+
 class Config:
-    running_pynq = False
+    running_pynq = 'xilinx' in os.getcwd()
     running_cocotb = not running_pynq
     inv_outs = running_pynq
     _ns = 1000
