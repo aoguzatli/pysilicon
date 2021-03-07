@@ -67,7 +67,6 @@ if Config.running_pynq:
         while(signal.read() == 1):
             time.sleep(0.001)
 
-if Config.running_cocotb:
-    cycle = Config.default_decorator(cycle)
-    cycles = Config.default_decorator(cycles)
-    wait_for_val = Config.default_decorator(wait_for_val)
+cycle = Config.default_decorator(cycle)
+cycles = Config.default_decorator(cycles)
+wait_for_val = Config.default_decorator(wait_for_val)

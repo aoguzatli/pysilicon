@@ -3,7 +3,7 @@ import os, time
 import pyvisa
 import sys
 
-rm=pyvisa.ResourceManager()
+rm = pyvisa.ResourceManager()
 supply_dummy_obfus = rm.open_resource('GPIB0::4::INSTR')
 supply_fpga_sensor = rm.open_resource('GPIB0::7::INSTR')
 supply_io_top = rm.open_resource('GPIB0::5::INSTR')

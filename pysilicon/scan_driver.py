@@ -90,13 +90,12 @@ class Scanner:
             else:
                 yield Timer(halfT)
 
-        if Config.running_cocotb:
-            if scan_en is not None:
-                if read_func(scan_en) == '1':
-                    print('ERROR: scan enable is high, another chain might be using the scan ports')
-                    return None
-                else:
-                    write_signal(scan_en, 1)
+        if scan_en is not None:
+            if Config.running_cocotb and read_func(scan_en) == '1':
+                print('ERROR: scan enable is high, another chain might be using the scan ports')
+                return None
+            else:
+                write_signal(scan_en, 1)
 
         outstr = ''
         for i, v in enumerate(val):
@@ -352,7 +351,6 @@ if Config.running_pynq:
             self.interface['reset'].on()
             self.interface['valid'].off()
             self.interface['num_bits'].write(0, int('001111111111111111', 2))
-            time.sleep(0.01)
             self.interface['reset'].off()
 
         def set_data(self, data):
