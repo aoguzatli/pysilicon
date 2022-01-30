@@ -16,7 +16,7 @@ class Scanner:
 
     def __init__(self, T = Config.T_default, interface = None, scan_clk = None, scan_in = None, scan_out = None,
         scan_en = None, scan_wen = None, fromMSB = False, verbosity = 0, clk_running = False,
-        clk_b = False, length = None, read_func = read_signal, scan_in_width = 1):
+        clk_b = False, length = None, read_func = read_signal):
 
         if interface is None:
             self._scan_in = scan_in
@@ -38,7 +38,6 @@ class Scanner:
         self.clk_b = clk_b
         self.length = length
         self.read_func = read_func
-        self.scan_in_width = scan_in_width
 
         self.halfT = int(T/2)
         self.quarterT = int(T/4)
@@ -81,10 +80,6 @@ class Scanner:
 
         if fromMSB:
             val = val[::-1]
-        
-        # Pad and split val to account for >1 scan in width chains
-        val = val.zfill(math.ceil(len(val)/self.scan_in_width))
-        val = [val[i:i+self.scan_in_width] for i in range(0, len(val), self.scan_in_width)]
 
         if Config.running_cocotb:
             if clk_running:
@@ -105,10 +100,10 @@ class Scanner:
         outstr = ''
         for i, v in enumerate(val):
             if scan_out is not None:
-                outstr = outstr + read_func(scan_out).zfill(self.scan_in_width)
+                outstr = outstr + read_func(scan_out)
 
             if (verbosity == 3 and i%100 == 0) or (verbosity == 4 and i%10 == 0) or (verbosity > 4):
-                print(f"Scanning bit {i*self.scan_in_width} out of {len(val)*self.scan_in_width-1}...")
+                print(f"Scanning bit {i} out of {len(val)-1}...")
 
             write_signal(scan_in, int(v, 2))
 
@@ -118,8 +113,7 @@ class Scanner:
                 cycle(scan_clk, T, clk_running)
 
         if fromMSB:
-            outstr = [outstr[i:i+self.scan_in_width] for i in range(0, len(outstr), self.scan_in_width)]
-            outstr = ''.join(outstr[::-1])
+            outstr = outstr[::-1]
 
         if scan_en is not None:
             write_signal(scan_en, 0)
