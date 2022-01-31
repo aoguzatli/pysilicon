@@ -83,7 +83,8 @@ class Scanner:
             val = val[::-1]
         
         # Pad and split val to account for >1 scan in width chains
-        val = val.zfill(math.ceil(len(val)/self.scan_in_width))
+        padding = ''.zfill((self.scan_in_width - len(val)) % self.scan_in_width)
+        val = padding + val
         val = [val[i:i+self.scan_in_width] for i in range(0, len(val), self.scan_in_width)]
 
         if Config.running_cocotb:
@@ -120,6 +121,8 @@ class Scanner:
         if fromMSB:
             outstr = [outstr[i:i+self.scan_in_width] for i in range(0, len(outstr), self.scan_in_width)]
             outstr = ''.join(outstr[::-1])
+        
+        outstr = outstr[len(padding):]
 
         if scan_en is not None:
             write_signal(scan_en, 0)
