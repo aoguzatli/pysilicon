@@ -12,15 +12,31 @@ if Config.running_cocotb:
 
 def read_signal(obj):
     if Config.running_cocotb:
-        return str(obj)
+        if type(obj) is list:
+            return ''.join([str(wire.value) for wire in obj][::-1])
+        else:
+            return str(obj.value)
     elif Config.running_pynq:
-        return str(obj.read())
+        if type(obj) is list:
+            return ''.join([str(wire.read()) for wire in obj][::-1])
+        else:
+            return str(obj.read())
 
 def write_signal(obj, val):
     if Config.running_cocotb:
-        obj <= val
+        if type(obj) is list:
+            bits = as_bin(val, len(obj))
+            for wire, bit in zip(obj, bits[::-1]):
+                wire <= int(bit)
+        else:
+            obj <= val
     elif Config.running_pynq:
-        obj.write(val)
+        if type(obj) is list:
+            bits = as_bin(val, len(obj))
+            for wire, bit in zip(obj, bits[::-1]):
+                wire.write(int(bit))
+        else:
+            obj.write(val)
 
 def cycle(clock, T = Config.T_default, clk_running = False):
     if Config.running_cocotb:

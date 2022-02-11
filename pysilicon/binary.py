@@ -62,6 +62,7 @@ def bin2hex(bin_val):
 def as_bin(n, width = None):
     out = rm_header(bin(int(n)))
     if width:
+        assert len(out) <= width, f'as_bin: {n} contains more bits than the requested width ({width})'
         out = out.zfill(width)
     return out
 
