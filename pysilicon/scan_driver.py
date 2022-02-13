@@ -122,7 +122,7 @@ class Scanner:
             outstr = [outstr[i:i+self.scan_in_width] for i in range(0, len(outstr), self.scan_in_width)]
             outstr = ''.join(outstr[::-1])
         
-        outstr = outstr[:-len(padding)]
+        outstr = outstr[:-len(padding) or None]
 
         if scan_en is not None:
             write_signal(scan_en, 0)

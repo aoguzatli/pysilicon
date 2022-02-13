@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pysilicon
-Version: 0.0.10
+Version: 0.0.11
 Summary: A package with useful Python scripts for IC design and verification
 Home-page: https://github.com/aoguzatli/pysilicon
 Author: Oguz Atli
