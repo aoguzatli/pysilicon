@@ -3,7 +3,7 @@ import os
 class Config:
     running_pynq = 'xilinx' in os.getcwd()
     running_cocotb = not running_pynq
-    inv_outs = running_pynq
+    inv_outs = False
     _ns = 1000
     T_default = int(10 * _ns)
 

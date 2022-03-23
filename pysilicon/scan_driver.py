@@ -166,7 +166,7 @@ class JTAG:
 
     def __init__(self, chains, confouts, interface = None, T = Config.T_default, jtag_clk = None, jtag_in = None,
                 jtag_out = None, jtag_en = None, jtag_load = None, scan_clk = None, scan_in = None, scan_out = None,
-                scan_en = None, fromMSB = False, read_func = read_signal):
+                scan_en = None, fromMSB = False, read_func = read_signal, scan_in_func = None, scan_out_func = None):
 
         if hasattr(chains, '__iter__'):
             self.chains = chains
@@ -178,6 +178,8 @@ class JTAG:
         self.confouts = confouts
         self.num_confouts = len(confouts)
         self.read_func = read_func
+        self.scan_in_func = scan_in_func
+        self.scan_out_func = scan_out_func
 
         if interface is None:
             self._jtag_in = jtag_in
@@ -251,29 +253,42 @@ class JTAG:
 
         return outstr
 
-    def scan_in(self, val):
+    def scan_in(self, val, **kwargs):
         chain = int(self.current_chain_bits, 2)
         clk = None
         if self.chains[chain]._scan_clk is None:
             clk = self._scan_clk
 
-        if Config.running_cocotb:
-            out = yield self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
+        if self.scan_in_func:
+            if Config.running_cocotb:
+                out = yield self.scan_in_func(chain, val, **kwargs)
+            else:
+                out = self.scan_in_func(chain, val, **kwargs)
         else:
-            out = self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
+            if Config.running_cocotb:
+                out = yield self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
+            else:
+                out = self.chains[chain].scan_in(val, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk, read_func = self.read_func)
 
         return out
 
-    def scan_out(self, num = None):
+    def scan_out(self, num = None, **kwargs):
         chain = int(self.current_chain_bits, 2)
         clk = None
         if self.chains[chain]._scan_clk is None:
             clk = self._scan_clk
-
-        if Config.running_cocotb:
-            out = yield self.chains[chain].scan_out(num, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
+        
+        if self.scan_out_func:
+            if Config.running_cocotb:
+                out = yield self.scan_out_func(chain, num, **kwargs)
+            else:
+                out = self.scan_out_func(chain, num, **kwargs)
+        
         else:
-            out = self.chains[chain].scan_out(num, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
+            if Config.running_cocotb:
+                out = yield self.chains[chain].scan_out(num, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
+            else:
+                out = self.chains[chain].scan_out(num, T = self.T, scan_in = self._scan_in, scan_en = self._scan_en, scan_out = self._scan_out, scan_clk = clk)
 
         return out
 

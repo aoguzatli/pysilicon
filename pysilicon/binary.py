@@ -8,7 +8,7 @@ def rand_binary_str(length):
     return out
 
 def rm_header(b):
-    if b.startswith("0b"):
+    if b.startswith("0b") or b.startswith("0x"):
         return b[2:]
     else:
         return b
@@ -55,7 +55,7 @@ def bin2hex(bin_val):
         elif 'z' in bin_quad or 'Z' in bin_quad:
             hex_val = hex_val + 'z'
         else:
-            hex_val = hex_val + hex(int(bin_val[i:i+4], 2))[2:]
+            hex_val = hex_val + rm_header(hex(int(bin_val[i:i+4], 2)))
 
     return hex_val.lower()
 
@@ -65,6 +65,10 @@ def as_bin(n, width = None):
         assert len(out) <= width, f'as_bin: {n} contains more bits than the requested width ({width})'
         out = out.zfill(width)
     return out
+
+def as_hex(n, width = None):
+    bin = as_bin(n, width)
+    return bin2hex(bin)
 
 def is_bin(n):
     return isinstance(n, str) and all([bit in ['0', '1'] for bit in n])
