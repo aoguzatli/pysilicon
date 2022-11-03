@@ -146,3 +146,6 @@ def rotating_equals(a, b):
         b.rotate(1)
 
     return False
+
+def split_to_chunks(bits, chunk_size):
+    return [bits[i:i+chunk_size] for i in range(0, len(bits), chunk_size)]

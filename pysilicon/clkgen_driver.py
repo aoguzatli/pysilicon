@@ -9,11 +9,11 @@ if Config.running_cocotb:
 
 class Clkgen:
 
-    def __init__(self, chain):
+    def __init__(self, chain, interface):
         self.interface = interface
         self.chain = chain
 
-    def set_fast_clk(division = 7, oscillator = 1, block = None):
+    def set_fast_clk(self, division = 7, oscillator = 1, block = None):
         if block is None:
             blk = '111111'
         else:
@@ -22,9 +22,9 @@ class Clkgen:
         osc = bin(2 ** oscillator)[2:].zfill(12)
         bits = blk + div + osc
 
-        write_signal(interface['sel_clk_extern'], 1)
-        write_signal(interface['global_en'], 0)
-        write_signal(interface['en_common'], 0)
+        write_signal(self.interface['sel_clk_extern'], 1)
+        write_signal(self.interface['global_en'], 0)
+        write_signal(self.interface['en_common'], 0)
 
         if Config.running_cocotb:
             yield self.chain.scan_in(bits)
@@ -34,15 +34,15 @@ class Clkgen:
             out = self.chain.scan_out(bits)
         assert out == bits, out
 
-        write_signal(interface['global_en'], 1)
-        write_signal(interface['en_common'], 1)
-        write_signal(interface['sel_clk_extern'], 0)
+        write_signal(self.interface['global_en'], 1)
+        write_signal(self.interface['en_common'], 1)
+        write_signal(self.interface['sel_clk_extern'], 0)
 
 
-    def set_slow_clk():
-        write_signal(interface['sel_clk_extern'], 1)
-        write_signal(interface['global_en'], 0)
-        write_signal(interface['en_common'], 0)
+    def set_slow_clk(self):
+        write_signal(self.interface['sel_clk_extern'], 1)
+        write_signal(self.interface['global_en'], 0)
+        write_signal(self.interface['en_common'], 0)
 
         bits = ''.zfill(6+14+12)
 

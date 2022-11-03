@@ -14,7 +14,7 @@ if Config.running_cocotb:
 
 class Scanner:
 
-    def __init__(self, T = Config.T_default, interface = None, scan_clk = None, scan_in = None, scan_out = None,
+    def __init__(self, T = Config.T_default, interface = None, suffix = 'scan', scan_clk = None, scan_in = None, scan_out = None,
         scan_en = None, scan_wen = None, fromMSB = False, verbosity = 0, clk_running = False,
         clk_b = False, length = None, read_func = read_signal, scan_in_width = 1):
 
@@ -25,13 +25,15 @@ class Scanner:
             self._scan_out = scan_out
             self._scan_wen = scan_wen
         else:
-            self._scan_in = interface.get('scan_in')
-            self._scan_clk = interface.get('scan_clk')
-            self._scan_en = interface.get('scan_en')
-            self._scan_out = interface.get('scan_out')
-            self._scan_wen = interface.get('scan_wen')
+            self._scan_in = interface.get(f'{suffix}_in')
+            self._scan_clk = interface.get(f'{suffix}_clk')
+            self._scan_en = interface.get(f'{suffix}_en')
+            self._scan_out = interface.get(f'{suffix}_out')
+            self._scan_wen = interface.get(f'{suffix}_wen')
+            self._scan_wen = interface.get(f'{suffix}_ld') # Alias for wen
 
         self.T = T
+        self.interface = interface
         self.fromMSB = fromMSB
         self.verbosity = verbosity
         self.clk_running = clk_running
@@ -50,10 +52,8 @@ class Scanner:
         if T is None:
             T = self.T
             halfT = self.halfT
-            quarterT = self.quarterT
         else:
             halfT = int(T/2)
-            quarterT = int(T/4)
 
         if scan_clk is None:
             scan_clk = self._scan_clk
@@ -124,9 +124,6 @@ class Scanner:
         
         outstr = outstr[:-len(padding) or None]
 
-        if scan_en is not None:
-            write_signal(scan_en, 0)
-
         if scan_wen is not None:
             write_signal(scan_wen, 1)
             if Config.running_cocotb:
@@ -134,6 +131,9 @@ class Scanner:
             else:
                 cycle(scan_clk, T, clk_running)
             write_signal(scan_wen, 0)
+
+        if scan_en is not None:
+            write_signal(scan_en, 0)
 
         if Config.inv_outs:
             outstr = inv(outstr)
