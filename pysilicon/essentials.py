@@ -36,7 +36,10 @@ def write_signal(obj, val):
             for wire, bit in zip(obj, bits[::-1]):
                 wire.write(int(bit))
         else:
-            obj.write(val, mask=0xFFFFFFFF) # TODO: mask should be configurable
+            try:
+                obj.write(val)
+            except:
+                obj.write(val, mask=0xFFFFFFFF) # TODO: mask should be configurable
 
 def cycle(clock, T = Config.T_default, clk_running = False):
     if Config.running_cocotb:
