@@ -6,12 +6,11 @@ pysilicon/__init__.py
 pysilicon/binary.py
 pysilicon/clkgen_driver.py
 pysilicon/config.py
-pysilicon/equipment_control.py
 pysilicon/essentials.py
 pysilicon/golden_models.py
-pysilicon/remote_tester.py
 pysilicon/scan_driver.py
 pysilicon/utils.py
+pysilicon/visa_driver.py
 pysilicon.egg-info/PKG-INFO
 pysilicon.egg-info/SOURCES.txt
 pysilicon.egg-info/dependency_links.txt

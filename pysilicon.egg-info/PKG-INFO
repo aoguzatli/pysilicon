@@ -1,12 +1,10 @@
 Metadata-Version: 2.1
 Name: pysilicon
-Version: 0.0.12
+Version: 0.0.14
 Summary: A package with useful Python scripts for IC design and verification
 Home-page: https://github.com/aoguzatli/pysilicon
 Author: Oguz Atli
 Author-email: aoguzatli@gmail.com
-License: UNKNOWN
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
@@ -17,5 +15,3 @@ License-File: LICENSE
 # pysilicon
 
 A Python library that offers useful utilities for digital IC designers. Contains scripts to help with Verilog simulation using Cocotb and FPGA testing using Pynq.
-
-
